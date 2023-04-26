@@ -1,10 +1,10 @@
-from functions import *
-from path_creation import *
+from Frame_segmentation.path_creation import *
 import os
 import requests
 import json
+from PIL import Image
 
-def download_masks(items):
+def download_masks(items,frames_bar_path):
     """download_masks
     
     This function downloads mask images, only masks associated with frame_bar are downloaded, 
@@ -17,9 +17,9 @@ def download_masks(items):
         image_id = item['External ID']
 
         # Chemin du dossier à créer
-        new_folder_path = os.path.join('structure/pictures/', image_id)
+        pictures_frame_bar_path = os.path.join(frames_bar_path, image_id.replace(".jpg", ""))
 
-        create_folder(new_folder_path)
+        create_folder(pictures_frame_bar_path)
 
         i = 0
         # téléchargement seulement des masques frame_bar 
@@ -32,7 +32,7 @@ def download_masks(items):
 
                 if response.status_code == 200:
                     image_content = response.content
-                    with open(os.path.join(new_folder_path, f"frame_{i}.png"), "wb") as f:
+                    with open(os.path.join(pictures_frame_bar_path, f"frame_{i}.png"), "wb") as f:
                         f.write(image_content)
                     print(f"L'image a été enregistrée avec succès : frame_{i}.png")
                     print(item['External ID'])
@@ -40,7 +40,32 @@ def download_masks(items):
                     print("Impossible de télécharger l'image.")
 #pour l'utilisé : download_masks(items)
 
-def superpose_masks(pictures_path, masks_path):
+def download_images(items,pictures_path):
+    """download_masks
+    
+    This function downloads mask images, only masks associated with frame_bar are downloaded, 
+    and they are saved in folders with the name of the associated object.
+
+    Args:
+        items (array): a list of items contained in the JSON file
+    """
+    for item in items:  
+        image_id = item['External ID']
+        url = item['Labeled Data']
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            image_content = response.content
+            with open(os.path.join(pictures_path, image_id), "wb") as f:
+                f.write(image_content)
+                print(f"L'image a été enregistrée avec succès : {image_id}")
+                print(item['External ID'])
+        else:
+            print("Impossible de télécharger l'image.")
+#pour l'utilisé : download_masks(items)
+
+
+def superpose_masks(frames_bar_path, frame_masks_path):
     """superpose_masks
     
     the function combines several mask images into one superimposed image,
@@ -52,8 +77,8 @@ def superpose_masks(pictures_path, masks_path):
         masks_path (str): path for the masks
     """
     # Définir les noms des dossiers contenant les images à superposer
-    image_folders = os.listdir(pictures_path)
-    directory = pictures_path
+    image_folders = os.listdir(frames_bar_path)
+    directory = frames_bar_path
 
     for image_folder in image_folders:
         # Définir le chemin du dossier contenant les images à superposer
@@ -74,12 +99,13 @@ def superpose_masks(pictures_path, masks_path):
                 image_superposee.alpha_composite(images_png[i])
 
             # Enregistrer l'image superposée
-            mask_dir = masks_path
+            mask_dir = frame_masks_path
             if not os.path.exists(mask_dir):
                 os.makedirs(mask_dir)
-            image_superposee.save(os.path.join(mask_dir, f"{image_folder}_mask.png"))
+            image_name = image_folder.replace(".jpg", "")
+            image_superposee.save(os.path.join(mask_dir, f"{image_name}_mask.png"))
 
-def delete_unmatched_images():
+def delete_unmatched_images(frame_masks_path):
     """delete_unmatched_images
     
     the function deletes the images that do not have a corresponding mask in a dataset, 
@@ -87,11 +113,10 @@ def delete_unmatched_images():
     
     """
     # Chemin des dossiers contenant les images et les annotations
-    images_dir = os.path.join(os.getcwd(), "CORAL_FRAMES")
-    masks_path = os.path.join(os.getcwd(), "structure/masks")
+    images_dir = os.path.join(os.getcwd(), "Data/Raw/Raw_pictures")
 
     # Obtenir la liste des noms de fichiers d'annotations sans l'extension ".png"
-    annotation_files = [os.path.splitext(f)[0] for f in os.listdir(masks_path) if f.endswith(".png")]
+    annotation_files = [os.path.splitext(f)[0] for f in os.listdir(frame_masks_path) if f.endswith(".png")]
 
     # Parcourir tous les dossiers "SHxxx" contenant les images
     for subdir in os.listdir(images_dir):
