@@ -7,7 +7,6 @@ object_detection==0.0.3
 opencv_contrib_python==4.7.0.72
 opencv_python==4.7.0.72
 pandas==1.4.2
-Pillow==9.3.0
 Pillow==9.5.0
 pylabel==0.1.48
 pytest==7.1.2
@@ -15,7 +14,7 @@ Requests==2.29.0
 scikit_learn==1.2.0
 scipy==1.9.3
 segment_anything==1.0
-skimage==0.0
 stochopy==2.2.0
 tensorflow==2.10.0
 mysqlclient
+scikit-image
