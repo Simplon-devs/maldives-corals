@@ -15,11 +15,17 @@ from typing import Iterable
 class CoralModelsInterface(ABC):
 
     @abstractclassmethod
-    def fit_corals_detection(img: Iterable, annot: Iterable):
+    def fit_corals_detection(
+        img: Iterable, 
+        annot: Iterable, 
+        start_from_pretrained=False
+        ):
         """
         Fits the fragments detection model.
         Args:
             img: iterable of images as matrices (e.g. images opened with PIL).
+            start_from_pretrained: if True, training will start from the last
+            model trained. If False, a brand new model will be created.
 
             annot: iterable containing iterables of annotations, one for each 
             image. Each annotation contains a fragment's category (acropora, 
@@ -35,7 +41,9 @@ class CoralModelsInterface(ABC):
         pass
 
     @abstractclassmethod
-    def detect_corals(img: Iterable) -> list:
+    def detect_corals(
+        img: Iterable
+        ) -> list:
         """
         Detects corals on the images stored in parameter img.
         Args:
@@ -53,7 +61,10 @@ class CoralModelsInterface(ABC):
         pass
 
     @abstractclassmethod
-    def fit_structure_detection(img: Iterable, masks: Iterable):
+    def fit_structure_detection(
+        img: Iterable, 
+        masks: Iterable
+        ):
         """
         Fits the structure detection model, finding out where the structure
         is on the images. The structures' location are stored as masks.
@@ -67,7 +78,9 @@ class CoralModelsInterface(ABC):
         pass
 
     @abstractclassmethod
-    def detect_structure(img: Iterable) -> list:
+    def detect_structure(
+        img: Iterable
+        ) -> list:
         """
         Detects the structure in the images stored in img and returns the
         corresponding masks.
