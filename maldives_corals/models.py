@@ -144,7 +144,13 @@ class CoralsModels(CoralModelsInterface):
         # Moving the trained model to the 'models' folder and deleting the files
         # created for the training
         ###########################################################################
+        try: os.mkdir('models')
+        except FileExistsError: pass
+        try: os.mkdir('json')
+        except FileExistsError: pass
+
         shutil.move(f'{data_folder}/models/yolov3_data_last.pt', 'models')
+        shutil.move(f'{data_folder}/json/data_yolov3_detection_config.json', 'json')
         shutil.rmtree(f'{data_folder}')
 
 
@@ -166,10 +172,35 @@ class CoralsModels(CoralModelsInterface):
         [["acropora", 0.25, 0.568, 0.02, 0.09],
         ["dead", 0.46, 0.49, 0.05, 0.04], ...]
         """
-        # Préparer les images pour qu'elles soient utilisables par ImageAI
-        # Faire la détection
-        # Renvoyer une liste des annotations
-        pass
+        ###########################################################################
+        # Converting the images arrays into files
+        ########################################################################### 
+        data_folder = f"predict_{time.time()}"
+        try: os.mkdir(data_folder)
+        except FileExistsError: pass
+
+        current_img_id = 0
+
+        for img_array in img:
+            im = Image.fromarray(img_array)
+            im.save(f'{data_folder}/{current_img_id}.png')
+            current_img_id += 1
+
+        ###########################################################################
+        # Detect coral fragments on the images
+        ########################################################################### 
+        # REPRENDRE LÀ
+
+        
+        detector = CustomObjectDetection()
+        detector.setModelTypeAsYOLOv3()
+        detector.setModelPath("models/yolov3_data_last.pt")
+        detector.setJsonPath("json/data_yolov3_detection_config.json")
+        detector.loadModel()
+        detections = detector.detectObjectsFromImage(input_image=input_image, output_image_path="prediction.jpg", minimum_percentage_probability=50)
+        for detection in detections:
+            print(detection["name"], " : ", detection["percentage_probability"], " : ", detection["box_points"])
+
 
     def fit_structure_detection(
             self,
