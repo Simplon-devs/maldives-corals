@@ -13,7 +13,7 @@ def define_paths():
     data_dir = os.getcwd() + "/Data"
 
     # Chemin où se trouve le JSON
-    json_path = os.path.join(data_dir,"Raw","Raw_json","raw.json")
+    json_path = os.path.join(data_dir,"Raw","Raw_json")
     
     # Chemin où seront enregistrés les photos
     pictures_path = os.path.join(data_dir,"Raw", "Raw_pictures")
@@ -21,10 +21,15 @@ def define_paths():
     # Chemin où sont téléchergées les images de frames bar 
     frames_bar_path = os.path.join(data_dir, "Raw","Frame_bar_pictures")
 
-        # Chemin où seront enregistrés les masques
+    # Chemin où seront enregistrés les masques
     frame_masks_path = os.path.join(data_dir, "Raw","Frame_masks_pictures")
+
+    # Chemins où seront enregistrés les images et masques finaux.
+    processed_pictures_path = os.path.join(data_dir, "Processed", "Processed_pictures")
+
+    processed_frame_masks_path = os.path.join(data_dir, "Processed", "Processed_frame_masks")
     
-    return data_dir, json_path, pictures_path, frames_bar_path, frame_masks_path
+    return data_dir, json_path, pictures_path, frames_bar_path, frame_masks_path, processed_pictures_path, processed_frame_masks_path
 
 def load_json(json_path):
     """load_json
@@ -37,6 +42,12 @@ def load_json(json_path):
     Returns:
         array :  a list of items contained in the JSON file
     """
+    json_path = os.path.join(json_path, "Raw.json")
+
+    if not os.path.exists(json_path):
+        print("Mettre le fichier raw.json dans le dossier Data/Raw/Raw_json")
+        return None
+
     with open(json_path, "r") as f:
         data = json.load(f)
 
@@ -64,25 +75,3 @@ def create_folder(path):
         print("Le dossier a été créé avec succès.")
     else:
         print("Le dossier existe déjà.")
-
-def rename_files(frame_masks_path):
-    """rename_files
-    
-    the function renames all image files 
-    in a folder to give them a name without extension.
-    
-    Args:
-        masks_path (str): path for the masks
-    """
-    frame_masks_path = "./structure/masks/"
-    print(frame_masks_path)
-    # Boucle sur tous les fichiers dans le dossier
-    for file in os.listdir(frame_masks_path):
-        # Vérifie que le fichier est un fichier et non un dossier
-        if os.path.isfile(os.path.join(frame_masks_path, file)):
-            # Vérifie que le fichier a l'extension ".jpg"
-            if ".jpg" in file:
-                # Construit le nouveau nom de fichier sans l'extension ".jpg"
-                new_name = file.replace(".jpg", "")
-                # Renomme le fichier en utilisant le nouveau nom
-                os.rename(os.path.join(frame_masks_path, file), os.path.join(frame_masks_path, new_name))
