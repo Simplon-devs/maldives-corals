@@ -16,6 +16,6 @@ pycocotools==2.0.6
 pylabel==0.1.48
 scipy==1.8.0
 segment_anything==1.0
-skimage==0.0
+scikit-image
 stochopy==2.2.0
 tensorflow==2.12.0
