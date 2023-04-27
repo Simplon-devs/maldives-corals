@@ -27,6 +27,13 @@ Validation:
 
 AFTER 200 EPOCHS ON RAW IMAGES (BATCH-SIZE = 10)
 
+Train: 
+29it [00:39,  1.36s/it]
+    box loss-> 0.02604, object loss-> 0.10093, class loss-> 0.00298
+Validation:
+15it [00:14,  1.06it/s]
+    recall: 0.165630 precision: 0.341594 mAP@0.5: 0.111738, mAP@0.5-0.95: 0.029770
+
 
 AFTER 5 EPOCHS ON EQUALIZED IMAGES (BATCH-SIZE = 10)
 

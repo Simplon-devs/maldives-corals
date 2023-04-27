@@ -16,7 +16,8 @@ class CoralModelsInterface(ABC):
 
     @abstractclassmethod
     def fit_corals_detection(
-        img: Iterable, 
+        self,
+        img: Iterable,
         annot: Iterable, 
         start_from_pretrained=False
         ):
@@ -42,6 +43,7 @@ class CoralModelsInterface(ABC):
 
     @abstractclassmethod
     def detect_corals(
+        self,
         img: Iterable
         ) -> list:
         """
@@ -62,6 +64,7 @@ class CoralModelsInterface(ABC):
 
     @abstractclassmethod
     def fit_structure_detection(
+        self,
         img: Iterable, 
         masks: Iterable
         ):
@@ -79,6 +82,7 @@ class CoralModelsInterface(ABC):
 
     @abstractclassmethod
     def detect_structure(
+        self,
         img: Iterable
         ) -> list:
         """

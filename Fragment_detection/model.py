@@ -82,7 +82,7 @@ def train_model(model_path):
 
     trainer.setModelTypeAsYOLOv3()
     trainer.setDataDirectory(data_directory="data")
-    trainer.setTrainConfig(object_names_array=["acropora", "tag", "pocillopora", "dead", "bleached"], 
+    trainer.setTrainConfig(object_names_array=["acropora", "pocillopora", "dead", "bleached", "tag"], 
                            batch_size=10, 
                            num_experiments=100, 
                            train_from_pretrained_model=model_path)
@@ -93,7 +93,7 @@ def train_model(model_path):
 # coco_to_yolo("output/COCO_val.json", "output/val_pictures")
 # equalize_img("output/all_pictures", "eq_pictures")
 # detect_objects("image_test.jpg")
-train_model("yolov3_on_raw.pt")
+train_model("models/yolov3.pt")
 
 ###########################################################
 # TRYING STUFF BELOW

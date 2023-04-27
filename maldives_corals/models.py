@@ -22,10 +22,11 @@ from maldives_corals.interface import CoralModelsInterface
 
 class CoralsModels(CoralModelsInterface):
 
-    def __init__(self) -> None:
+    def __init__(self):
         pass
 
     def fit_corals_detection(
+        self,
         img: Iterable, 
         annot: Iterable, 
         start_from_pretrained=False
@@ -48,10 +49,10 @@ class CoralsModels(CoralModelsInterface):
         
         Returns None.
         """
-
         trainer = DetectionModelTrainer()
         trainer.setModelTypeAsYOLOv3()
         train_val_split = 0.8
+        classes = ["acropora", "pocillopora", "dead", "bleached", "tag"]
 
         ###########################################################################
         # Converting the images and annotations to files so the model can use them 
@@ -81,12 +82,28 @@ class CoralsModels(CoralModelsInterface):
         data_split_index = int(train_val_split*len(img))
         print(data_split_index)
 
-        train_img = img[]
+        train_img = img[:data_split_index]
+        train_annot = annot[:data_split_index]
+
+        val_img = img[:data_split_index]
+        val_annot = annot[:data_split_index]
 
         current_img_id = 0
-        for img_array in img:
+        for img_array, annots in zip(train_img, train_annot):
             im = Image.fromarray(img_array)
             im.save(f'{data_folder}/yolo/train/images/{current_img_id}.png')
+
+            for a in annots:
+                clean_annotation = ""
+                class_index = classes.find(a[0])
+                if class_index == -1: 
+                    raise ValueError(f"Class '{a[0]} does not exist, please make sure you used the right spelling'")
+                else:
+                    clean_annotation += str(class_index)
+                    clean_annotation += " "
+                    clean_annotation += " ".join(a[1:])
+                print(clean_annotation)
+
             current_img_id += 1
 
         trainer.setDataDirectory(data_directory="data")
@@ -95,13 +112,13 @@ class CoralsModels(CoralModelsInterface):
         # Training the model 
         ###########################################################################   
         if start_from_pretrained:
-            trainer.setTrainConfig(object_names_array=["acropora", "tag", "pocillopora", "dead", "bleached"], 
+            trainer.setTrainConfig(object_names_array=classes, 
                             batch_size=10, 
                             num_experiments=200, 
                             train_from_pretrained_model="models/yolov3_data_last.pt")
 
         else:
-            trainer.setTrainConfig(object_names_array=["acropora", "tag", "pocillopora", "dead", "bleached"], 
+            trainer.setTrainConfig(object_names_array=classes, 
                             batch_size=10, 
                             num_experiments=200, 
                             train_from_pretrained_model="models/yolov3.pt")
@@ -113,6 +130,7 @@ class CoralsModels(CoralModelsInterface):
         ########################################################################### 
 
     def detect_corals(
+            self,
             img: Iterable
             ) -> list:
         """
@@ -135,6 +153,7 @@ class CoralsModels(CoralModelsInterface):
         pass
 
     def fit_structure_detection(
+            self,
             img: Iterable, 
             masks: Iterable
             ):
@@ -151,6 +170,7 @@ class CoralsModels(CoralModelsInterface):
         pass
 
     def detect_structure(
+            self,
             img: Iterable
             ) -> list:
         """
