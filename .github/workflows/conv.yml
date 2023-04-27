@@ -3,7 +3,7 @@ name: conv test
 on:
   push:
     branches:
-      - Feat/pipeline_conv
+      - Feat/pipeline
       - Team-BDD
       - Team-DW
       - Team-Ref
