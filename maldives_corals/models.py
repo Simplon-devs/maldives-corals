@@ -9,6 +9,7 @@ More models will be added later.
 """
 
 import os
+import shutil
 import time
 from imageai.Detection.Custom import DetectionModelTrainer
 from imageai.Detection.Custom import CustomObjectDetection
@@ -80,33 +81,48 @@ class CoralsModels(CoralModelsInterface):
         except FileExistsError: pass
 
         data_split_index = int(train_val_split*len(img))
-        print(data_split_index)
 
         train_img = img[:data_split_index]
         train_annot = annot[:data_split_index]
 
-        val_img = img[:data_split_index]
-        val_annot = annot[:data_split_index]
+        val_img = img[data_split_index:]
+        val_annot = annot[data_split_index:]
 
         current_img_id = 0
         for img_array, annots in zip(train_img, train_annot):
             im = Image.fromarray(img_array)
             im.save(f'{data_folder}/yolo/train/images/{current_img_id}.png')
-
-            for a in annots:
-                clean_annotation = ""
-                class_index = classes.find(a[0])
-                if class_index == -1: 
-                    raise ValueError(f"Class '{a[0]} does not exist, please make sure you used the right spelling'")
-                else:
+            with open(f'{data_folder}/yolo/train/annotations/{current_img_id}.txt', 'w') as annot_file:
+                annotations_lines = []
+                for a in annots:
+                    clean_annotation = ""
+                    class_index = classes.index(a[0])
                     clean_annotation += str(class_index)
                     clean_annotation += " "
-                    clean_annotation += " ".join(a[1:])
-                print(clean_annotation)
-
+                    clean_annotation += " ".join([str(a[1]), str(a[2]), str(a[3]), str(a[4])])
+                    annotations_lines.append(clean_annotation)
+                for line in annotations_lines: annot_file.write(line + '\n')
+                
             current_img_id += 1
 
-        trainer.setDataDirectory(data_directory="data")
+        for img_array, annots in zip(val_img, val_annot):
+            im = Image.fromarray(img_array)
+            im.save(f'{data_folder}/yolo/validation/images/{current_img_id}.png')
+            with open(f'{data_folder}/yolo/validation/annotations/{current_img_id}.txt', 'w') as annot_file:
+                annotations_lines = []
+                for a in annots:
+                    clean_annotation = ""
+                    class_index = classes.index(a[0])
+                    clean_annotation += str(class_index)
+                    clean_annotation += " "
+                    clean_annotation += " ".join([str(a[1]), str(a[2]), str(a[3]), str(a[4])])
+                    annotations_lines.append(clean_annotation)
+                for line in annotations_lines: annot_file.write(line + '\n')
+            
+            current_img_id += 1
+
+
+        trainer.setDataDirectory(data_directory=f'{data_folder}/yolo')
 
         ###########################################################################
         # Training the model 
@@ -127,7 +143,10 @@ class CoralsModels(CoralModelsInterface):
         ###########################################################################
         # Moving the trained model to the 'models' folder and deleting the files
         # created for the training
-        ########################################################################### 
+        ###########################################################################
+        shutil.move(f'{data_folder}/models/yolov3_data_last.pt', 'models')
+        shutil.rmtree(f'{data_folder}')
+
 
     def detect_corals(
             self,
