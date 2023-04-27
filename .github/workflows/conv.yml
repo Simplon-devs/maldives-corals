@@ -41,4 +41,4 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run conv tests
-        run: pytest test_conv.py 
+        run: pytest test_requirements.txt.py 
