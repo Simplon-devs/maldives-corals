@@ -10,6 +10,8 @@ def conv():
                 cpt +=1
     if cpt <= 1:        
         print(f"Il reste {cpt} dossier à formater")
+        print('Voici un exemple de nom de dossier : Frame_detection')
     else:
         print(f"Il reste {cpt} dossiers à formater")
+        print('Voici un exemple de nom de dossier : Frame_detection')
     return cpt
