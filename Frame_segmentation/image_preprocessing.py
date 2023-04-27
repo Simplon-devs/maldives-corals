@@ -1,7 +1,6 @@
 from Frame_segmentation.path_creation import create_folder
 import os
 import requests
-import json
 from PIL import Image
 import glob
 import numpy as np
@@ -32,14 +31,14 @@ def download_masks(items, frames_bar_path):
                         image_content = response.content
                         with open(os.path.join(pictures_frame_bar_path, f"frame_{i}.png"), "wb") as f:
                             f.write(image_content)
-                        print(f"L'image a été enregistrée avec succès : frame_{i}.png")
-                        print(item['External ID'])
-                    else:
-                        print("Impossible de télécharger l'image.")
-            else:
-                print(f"Le dossier '{pictures_frame_bar_path}' existe déjà. Aucune image ne sera téléchargée pour l'élément {item['External ID']}.")
-        else:
-            print(f"Aucun objet 'frame_bar' trouvé dans l'élément {item['External ID']}. Aucune image ne sera téléchargée.")
+        #                 print(f"L'image a été enregistrée avec succès : frame_{i}.png")
+        #                 print(item['External ID'])
+        #             else:
+        #                 print("Impossible de télécharger l'image.")
+        #     else:
+        #         print(f"Le dossier '{pictures_frame_bar_path}' existe déjà. Aucune image ne sera téléchargée pour l'élément {item['External ID']}.")
+        # else:
+        #     print(f"Aucun objet 'frame_bar' trouvé dans l'élément {item['External ID']}. Aucune image ne sera téléchargée.")
 
             
 def download_images(items, pictures_path):
@@ -53,7 +52,7 @@ def download_images(items, pictures_path):
             image_id = item['External ID']
             image_path = os.path.join(pictures_path, image_id)
             if os.path.exists(image_path):
-                print(f"L'image {image_id} existe déjà dans le dossier. Passer à l'élément suivant.")
+                #print(f"L'image {image_id} existe déjà dans le dossier. Passer à l'élément suivant.")
                 continue
                 
             url = item['Labeled Data']
@@ -62,12 +61,12 @@ def download_images(items, pictures_path):
                 image_content = response.content
                 with open(image_path, "wb") as f:
                     f.write(image_content)
-                    print(f"L'image a été enregistrée avec succès : {image_id}")
-                    print(item['External ID'])
-            else:
-                print(f"Impossible de télécharger l'image {image_id}.")
-        else:
-            print(f"Aucun objet 'frame_bar' trouvé dans l'élément {item['External ID']}. Aucune image ne sera téléchargée.")
+                    # print(f"L'image a été enregistrée avec succès : {image_id}")
+                    # print(item['External ID'])
+        #     else:
+        #         print(f"Impossible de télécharger l'image {image_id}.")
+        # else:
+        #     print(f"Aucun objet 'frame_bar' trouvé dans l'élément {item['External ID']}. Aucune image ne sera téléchargée.")
 
 
 def superpose_masks(frames_bar_path, frame_masks_path):

@@ -1,5 +1,4 @@
 import os
-import requests
 import json
 
 def define_paths():
@@ -57,8 +56,6 @@ def load_json(json_path):
         items.append(raw)
 
     return items
-#appeler cette fonction avec le chemin vers votre fichier JSON
-#items = load_json(json_path)
 
 def create_folder(path):
     """create folder
@@ -72,6 +69,6 @@ def create_folder(path):
     # Vérifier si le dossier existe déjà sinon le créer
     if not os.path.exists(path):
         os.makedirs(path)
-        print("Le dossier a été créé avec succès.")
-    else:
-        print("Le dossier existe déjà.")
+    #     print("Le dossier a été créé avec succès.")
+    # else:
+    #     print("Le dossier existe déjà.")

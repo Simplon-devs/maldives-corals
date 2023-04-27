@@ -39,7 +39,8 @@ def test_download_mask():
 
     data_dir, json_path, pictures_path, frames_bar_path, frame_masks_path, processed_pictures_path, processed_frame_masks_path = define_paths()
     items = load_json(json_path)
-    download_masks(items, frames_bar_path)
+    items_lite = items[0:10]
+    download_masks(items_lite, frames_bar_path)
 
     assert frames_bar_path is not None 
 
@@ -51,26 +52,28 @@ def test_superpose_masks():
 
     assert frame_masks_path is not None 
 
-
 def test_download_images():
 
     data_dir, json_path, pictures_path, frames_bar_path, frame_masks_path, processed_pictures_path, processed_frame_masks_path = define_paths()
     items = load_json(json_path)
-    download_images(items, pictures_path)
+    items_lite = items[0:10]
+    download_images(items_lite, pictures_path)
 
     assert pictures_path is not None
-    
 
 def test_prepare_pictures():
     data_dir, json_path, pictures_path, frames_bar_path, frame_masks_path, processed_pictures_path, processed_frame_masks_path = define_paths()
     prepare_pictures(frame_masks_path, pictures_path, processed_pictures_path, processed_frame_masks_path, target_width = 192)
 
+    assert processed_pictures_path is not None
+    assert processed_frame_masks_path is not None 
+
 if __name__ == "__main__":
 
-    # test_define_paths()
+    test_define_paths()
     test_create_folder()
-    # test_json_path()
-    # test_download_mask()
-    # test_superpose_masks()
-    # test_download_images()
+    test_json_path()
+    test_download_mask()
+    test_superpose_masks()
+    test_download_images()
     test_prepare_pictures()
