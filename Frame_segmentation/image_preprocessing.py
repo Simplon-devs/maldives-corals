@@ -118,16 +118,18 @@ def prepare_pictures(frame_masks_path, pictures_path, processed_pictures_path, p
     i, j = 0, 0
     target_height = 0.75 * target_width
 
-    pics_paths = glob.glob(pictures_path + "*.jpg")
-    print(pics_paths)
-    masks_paths = glob.glob(frame_masks_path + "*.png")
-    print(masks_paths)
+    # Extraire les chemins de tous les fichiers d'image avec les extensions .jpg et .png dans pictures_path
+    pics_paths = glob.glob(pictures_path + "/*.jpg")
+    
+    # Extraire les chemins de tous les fichiers de masque avec l'extension .png dans masks_path
+    masks_paths = glob.glob(frame_masks_path + "/*.png")
 
     # Pictures
+    
     for path in pics_paths:
         new_path = path.replace(pictures_path, processed_pictures_path).replace('.jpg', '.png')
 
-        if new_path.replace(processed_pictures_path, frame_masks_path) in masks_paths:
+        if new_path.replace(processed_pictures_path, frame_masks_path).replace('.png', '_mask.png') in masks_paths:
 
             image = Image.open(path)
             width, height = image.size

@@ -13,12 +13,14 @@ def test_define_paths():
     assert pictures_path == os.path.join(data_dir,"Raw", "Raw_pictures")
     assert frames_bar_path == os.path.join(data_dir, "Raw","Frame_bar_pictures")
     assert frame_masks_path == os.path.join(data_dir, "Raw","Frame_masks_pictures")
+    assert processed_pictures_path == os.path.join(data_dir, "Processed", "Processed_pictures")
+    assert processed_frame_masks_path == os.path.join(data_dir, "Processed", "Processed_frame_masks")
 
 
 def test_create_folder():
 
     data_dir, json_path, pictures_path, frames_bar_path, frame_masks_path, processed_pictures_path, processed_frame_masks_path = define_paths()
-    paths = [data_dir, json_path, pictures_path, frames_bar_path, frame_masks_path]
+    paths = [data_dir, json_path, pictures_path, frames_bar_path, frame_masks_path, processed_pictures_path, processed_frame_masks_path]
 
     for path in paths : 
         create_folder(path)
@@ -57,6 +59,7 @@ def test_download_images():
     download_images(items, pictures_path)
 
     assert pictures_path is not None
+    
 
 def test_prepare_pictures():
     data_dir, json_path, pictures_path, frames_bar_path, frame_masks_path, processed_pictures_path, processed_frame_masks_path = define_paths()
@@ -65,7 +68,7 @@ def test_prepare_pictures():
 if __name__ == "__main__":
 
     # test_define_paths()
-    # test_create_folder()
+    test_create_folder()
     # test_json_path()
     # test_download_mask()
     # test_superpose_masks()
