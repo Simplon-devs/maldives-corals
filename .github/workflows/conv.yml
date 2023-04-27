@@ -3,7 +3,7 @@ name: conv test
 on:
   push:
     branches:
-      - Feat/pipeline_conv
+      - Feat/pipeline
       - Team-BDD
       - Team-DW
       - Team-Ref
@@ -38,7 +38,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r test_requirements.txt
 
       - name: Run conv tests
         run: pytest test_conv.py 
