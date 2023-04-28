@@ -84,7 +84,7 @@ def train_model(model_path):
     trainer.setDataDirectory(data_directory="data")
     trainer.setTrainConfig(object_names_array=["acropora", "tag", "pocillopora", "dead", "bleached"], 
                            batch_size=10, 
-                           num_experiments=20, 
+                           num_experiments=100, 
                            train_from_pretrained_model=model_path)
     trainer.trainModel()
 
