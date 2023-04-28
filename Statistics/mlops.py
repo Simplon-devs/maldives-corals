@@ -63,10 +63,10 @@ else:
                     lines, = axs.plot_date(mz_data.index, mz_data['avgrowth'], '-', label=mz)
                 return lines
             else:
-                print('No live coral data found for zone', z)
+                print('No live coral data found for zone', zone)
                 return None
 
-        """ # Création imputer pour remplacer les valeurs manquantes par la moyenne
+        # Création imputer pour remplacer les valeurs manquantes par la moyenne
         imputer = SimpleImputer(strategy='mean')
 
         # Entrainement du modèle de régression linéaire pour le taux de mortalité
@@ -180,4 +180,4 @@ else:
             mlflow.log_artifact(f"growth_{z}.png")
             plt.close(fig)
 
-        mlflow.end_run()"""
+        mlflow.end_run()
