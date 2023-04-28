@@ -2,4 +2,4 @@ pytest
 requests
 Pillow
 numpy
-opencv
+opencv-python
