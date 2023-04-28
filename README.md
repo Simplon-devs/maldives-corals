@@ -1,7 +1,7 @@
 # Analyzing coral restoration with machine learning
 
 
-## IMPORTANT: check out the readme in the subfolder **maldives_corals** if you are looking for the package documentation.
+**IMPORTANT: check out the readme in the subfolder maldives_corals if you are looking for the package documentation.**
 
 
 
