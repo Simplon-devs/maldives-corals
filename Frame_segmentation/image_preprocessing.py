@@ -134,7 +134,7 @@ def prepare_pictures(frame_masks_path, pictures_path, processed_pictures_path, p
             width, height = image.size
             new_height = int(height * target_width / width)
             size = target_width, new_height
-            image.thumbnail(size, Image.ANTIALIAS)
+            image.thumbnail(size, Image.Resampling.LANCZOS )
             im = np.array(image, np.float32)
 
             padded = cv2.cvtColor(im,cv2.COLOR_BGR2RGB)
@@ -151,7 +151,7 @@ def prepare_pictures(frame_masks_path, pictures_path, processed_pictures_path, p
         new_height = int(height * target_width / width)
         size = target_width, new_height
         image = image.convert('L')
-        image.thumbnail(size, Image.ANTIALIAS)
+        image.thumbnail(size, Image.Resampling.LANCZOS)
         im = np.array(image, np.float32)
 
         cv2.imwrite(new_path, 255*im)
