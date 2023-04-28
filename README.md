@@ -1,6 +1,9 @@
 # Analyzing coral restoration with machine learning
 
-## IMPORTANT: check out the readme in the subfolder **maldives_corals** if you are looking for the package documentation.
+
+# IMPORTANT: check out the readme in the subfolder **maldives_corals** if you are looking for the package documentation.
+
+
 
 This work was published in *Aquatic Conservation: Marine and Freshwater Ecosystems* ([link](https://doi.org/10.1002/aqc.3878)) and can be cited the following way:
 
