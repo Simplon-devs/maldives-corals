@@ -1,23 +1,6 @@
 # Analyzing coral restoration with machine learning
 
-## IMPORTANT INFORMATION:
-In order to install the maldives_corals package, run the following commands:
-```
-git clone https://github.com/Simplon-devs/maldives-corals.git
-cd maldives_corals
-python3 -m pip install maldives_corals
-```
-
-You can then use the package's models like this:
-```
-from maldives_corals import CoralsModels
-
-models = CoralsModels()
-```
-
-Check the source code for more information (documentation is coming!)
-
-
+## IMPORTANT: check out the readme in the subfolder **maldives_corals** if you are looking for the package documentation.
 
 This work was published in *Aquatic Conservation: Marine and Freshwater Ecosystems* ([link](https://doi.org/10.1002/aqc.3878)) and can be cited the following way:
 
