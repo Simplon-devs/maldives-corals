@@ -9,6 +9,7 @@ More models will be added later.
 """
 
 import os
+import shutil
 import time
 from imageai.Detection.Custom import DetectionModelTrainer
 from imageai.Detection.Custom import CustomObjectDetection
@@ -22,10 +23,11 @@ from maldives_corals.interface import CoralModelsInterface
 
 class CoralsModels(CoralModelsInterface):
 
-    def __init__(self) -> None:
+    def __init__(self):
         pass
 
     def fit_corals_detection(
+        self,
         img: Iterable, 
         annot: Iterable, 
         start_from_pretrained=False
@@ -48,10 +50,10 @@ class CoralsModels(CoralModelsInterface):
         
         Returns None.
         """
-
         trainer = DetectionModelTrainer()
         trainer.setModelTypeAsYOLOv3()
         train_val_split = 0.8
+        classes = ["acropora", "pocillopora", "dead", "bleached", "tag"]
 
         ###########################################################################
         # Converting the images and annotations to files so the model can use them 
@@ -79,29 +81,60 @@ class CoralsModels(CoralModelsInterface):
         except FileExistsError: pass
 
         data_split_index = int(train_val_split*len(img))
-        print(data_split_index)
 
-        train_img = img[]
+        train_img = img[:data_split_index]
+        train_annot = annot[:data_split_index]
+
+        val_img = img[data_split_index:]
+        val_annot = annot[data_split_index:]
 
         current_img_id = 0
-        for img_array in img:
+        for img_array, annots in zip(train_img, train_annot):
             im = Image.fromarray(img_array)
             im.save(f'{data_folder}/yolo/train/images/{current_img_id}.png')
+            with open(f'{data_folder}/yolo/train/annotations/{current_img_id}.txt', 'w') as annot_file:
+                annotations_lines = []
+                for a in annots:
+                    clean_annotation = ""
+                    class_index = classes.index(a[0])
+                    clean_annotation += str(class_index)
+                    clean_annotation += " "
+                    clean_annotation += " ".join([str(a[1]), str(a[2]), str(a[3]), str(a[4])])
+                    annotations_lines.append(clean_annotation)
+                for line in annotations_lines: annot_file.write(line + '\n')
+                
             current_img_id += 1
 
-        trainer.setDataDirectory(data_directory="data")
+        for img_array, annots in zip(val_img, val_annot):
+            im = Image.fromarray(img_array)
+            im.save(f'{data_folder}/yolo/validation/images/{current_img_id}.png')
+            with open(f'{data_folder}/yolo/validation/annotations/{current_img_id}.txt', 'w') as annot_file:
+                annotations_lines = []
+                for a in annots:
+                    clean_annotation = ""
+                    class_index = classes.index(a[0])
+                    clean_annotation += str(class_index)
+                    clean_annotation += " "
+                    clean_annotation += " ".join([str(a[1]), str(a[2]), str(a[3]), str(a[4])])
+                    annotations_lines.append(clean_annotation)
+                for line in annotations_lines: annot_file.write(line + '\n')
+            
+            current_img_id += 1
+
+
+        trainer.setDataDirectory(data_directory=f'{data_folder}/yolo')
 
         ###########################################################################
         # Training the model 
         ###########################################################################   
         if start_from_pretrained:
-            trainer.setTrainConfig(object_names_array=["acropora", "tag", "pocillopora", "dead", "bleached"], 
+            trainer.setTrainConfig(object_names_array=classes, 
                             batch_size=10, 
                             num_experiments=200, 
                             train_from_pretrained_model="models/yolov3_data_last.pt")
 
         else:
-            trainer.setTrainConfig(object_names_array=["acropora", "tag", "pocillopora", "dead", "bleached"], 
+            trainer.setTrainConfig(object_names_array=classes, 
                             batch_size=10, 
                             num_experiments=200, 
                             train_from_pretrained_model="models/yolov3.pt")
@@ -110,9 +143,19 @@ class CoralsModels(CoralModelsInterface):
         ###########################################################################
         # Moving the trained model to the 'models' folder and deleting the files
         # created for the training
-        ########################################################################### 
+        ###########################################################################
+        try: os.mkdir('models')
+        except FileExistsError: pass
+        try: os.mkdir('json')
+        except FileExistsError: pass
+
+        shutil.move(f'{data_folder}/models/yolov3_data_last.pt', 'models')
+        shutil.move(f'{data_folder}/json/data_yolov3_detection_config.json', 'json')
+        shutil.rmtree(data_folder)
+
 
     def detect_corals(
+            self,
             img: Iterable
             ) -> list:
         """
@@ -122,19 +165,65 @@ class CoralsModels(CoralModelsInterface):
 
         Returns a list containing annotations for each 
         image. Each annotation contains a fragment's category (acropora, 
-        bleached, etc...) as well as its bounding box's coordinates on 
-        the image. Ex. ["acropora", x, y, width, height]. x, y, as well
+        bleached, etc...) as well as its percentage probability and 
+        its bounding box's coordinates on  the image. 
+        Ex. ["acropora", probability, x, y, width, height]. x, y, as well
         as width and heigth are relative coordinates (i.e. between 0 and 1)
         Example of annotations for one image:
-        [["acropora", 0.25, 0.568, 0.02, 0.09],
-        ["dead", 0.46, 0.49, 0.05, 0.04], ...]
+        [["acropora", 96.04, 0.25, 0.568, 0.02, 0.09],
+        ["dead", 52,09, 0.46, 0.49, 0.05, 0.04], ...]
         """
-        # Préparer les images pour qu'elles soient utilisables par ImageAI
-        # Faire la détection
-        # Renvoyer une liste des annotations
-        pass
+        ###########################################################################
+        # Converting the images arrays into files
+        ########################################################################### 
+        input_folder = f"input_{time.time()}"
+        try: os.mkdir(input_folder)
+        except FileExistsError: pass
+
+        current_img_id = 0
+        img_ids = []
+        predictions = []
+
+        for img_array in img:
+            im = Image.fromarray(img_array)
+            im.save(f'{input_folder}/{current_img_id}.png')
+            img_ids.append(current_img_id)
+            current_img_id += 1
+
+        ###########################################################################
+        # Detect coral fragments on the images
+        ########################################################################### 
+
+        
+        detector = CustomObjectDetection()
+        detector.setModelTypeAsYOLOv3()
+        detector.setModelPath("models/yolov3_data_last.pt")
+        detector.setJsonPath("json/data_yolov3_detection_config.json")
+        detector.loadModel()
+
+        for id in img_ids:
+            detections = []
+            with Image.open(f'{input_folder}/{id}.png') as input_img:
+                width, height = input_img.size
+            results = detector.detectObjectsFromImage(input_image=f'{input_folder}/{id}.png', minimum_percentage_probability=70)
+            for r in results:
+                detections.append(
+                    [
+                    r["name"],
+                    r["percentage_probability"],
+                    r["box_points"][0]/width,
+                    r["box_points"][1]/height,
+                    (r["box_points"][2]-r["box_points"][0])/width,
+                    (r["box_points"][3]-r["box_points"][1])/height
+                ]
+                )
+            predictions.append(detections)
+
+        shutil.rmtree(input_folder)
+        return predictions
 
     def fit_structure_detection(
+            self,
             img: Iterable, 
             masks: Iterable
             ):
@@ -151,6 +240,7 @@ class CoralsModels(CoralModelsInterface):
         pass
 
     def detect_structure(
+            self,
             img: Iterable
             ) -> list:
         """

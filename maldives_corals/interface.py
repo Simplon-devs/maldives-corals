@@ -16,7 +16,8 @@ class CoralModelsInterface(ABC):
 
     @abstractclassmethod
     def fit_corals_detection(
-        img: Iterable, 
+        self,
+        img: Iterable,
         annot: Iterable, 
         start_from_pretrained=False
         ):
@@ -42,6 +43,7 @@ class CoralModelsInterface(ABC):
 
     @abstractclassmethod
     def detect_corals(
+        self,
         img: Iterable
         ) -> list:
         """
@@ -51,17 +53,19 @@ class CoralModelsInterface(ABC):
 
         Returns a list containing annotations for each 
         image. Each annotation contains a fragment's category (acropora, 
-        bleached, etc...) as well as its bounding box's coordinates on 
-        the image. Ex. ["acropora", x, y, width, height]. x, y, as well
+        bleached, etc...) as well as its percentage probability and 
+        its bounding box's coordinates on  the image. 
+        Ex. ["acropora", probability, x, y, width, height]. x, y, as well
         as width and heigth are relative coordinates (i.e. between 0 and 1)
         Example of annotations for one image:
-        [["acropora", 0.25, 0.568, 0.02, 0.09],
-        ["dead", 0.46, 0.49, 0.05, 0.04], ...]
+        [["acropora", 96.04, 0.25, 0.568, 0.02, 0.09],
+        ["dead", 52,09, 0.46, 0.49, 0.05, 0.04], ...]
         """
         pass
 
     @abstractclassmethod
     def fit_structure_detection(
+        self,
         img: Iterable, 
         masks: Iterable
         ):
@@ -79,6 +83,7 @@ class CoralModelsInterface(ABC):
 
     @abstractclassmethod
     def detect_structure(
+        self,
         img: Iterable
         ) -> list:
         """
