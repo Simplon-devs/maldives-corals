@@ -1,6 +1,7 @@
 """
 IMPORTANT : the list of dependencies is note definitive and will need
 to be reviewed (some dependencies might be unneeded).
+
 The following dependencies might be required:
 - sudo apt-get install libmysqlclient-dev
 - sudo apt-get install libopenmpi-dev
@@ -18,8 +19,6 @@ setup(name='maldives_corals',
             'pytest==7.3.1',
             'imageai==3.0.3',
             'matplotlib==3.5.1',
-            'mpi4py==3.1.4',
-            'mpi4py_mpich==3.1.2',
             'mysql-connector==2.2.9',
             'mysqlclient==2.1.1',
             'PyMySQL==1.0.3',

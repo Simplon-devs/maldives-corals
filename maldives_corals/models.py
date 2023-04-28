@@ -17,7 +17,6 @@ from typing import Iterable
 from PIL import Image
 
 
-from maldives_corals import utils
 from maldives_corals.interface import CoralModelsInterface
 
 
@@ -125,7 +124,7 @@ class CoralsModels(CoralModelsInterface):
         trainer.setDataDirectory(data_directory=f'{data_folder}/yolo')
 
         ###########################################################################
-        # Training the model 
+        # Training the model (this can be VERY long)
         ###########################################################################   
         if start_from_pretrained:
             trainer.setTrainConfig(object_names_array=classes, 
