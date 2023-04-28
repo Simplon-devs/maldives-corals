@@ -6,6 +6,7 @@ For now it is made up of two components:
 coral fragments on an image
 - an image segmentation model that detects the structure on the picture
 More models will be added later.
+
 NOTE: this is an abstract class, see model.py for the
 implementation.
 """
