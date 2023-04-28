@@ -1,5 +1,24 @@
 # Analyzing coral restoration with machine learning
 
+## IMPORTANT INFORMATION:
+In order to install the maldives_corals package, run the following commands:
+```
+git clone https://github.com/Simplon-devs/maldives-corals.git
+cd maldives_corals
+python3 -m pip install maldives_corals
+```
+
+You can then use the package's models like this:
+```
+from maldives_corals import CoralsModels
+
+models = CoralsModels()
+```
+
+Check the source code for more information (documentation is coming!)
+
+
+
 This work was published in *Aquatic Conservation: Marine and Freshwater Ecosystems* ([link](https://doi.org/10.1002/aqc.3878)) and can be cited the following way:
 
 > Morand, G., Dixon, S. & Le Berre, T. (2022). Identifying key factors for coral survival in reef restoration projects using deep learning. *Aquatic Conservation: Marine and Freshwater Ecosystems*, 32( 11), 1758– 1773. https://doi.org/10.1002/aqc.3878 
