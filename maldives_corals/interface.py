@@ -53,12 +53,13 @@ class CoralModelsInterface(ABC):
 
         Returns a list containing annotations for each 
         image. Each annotation contains a fragment's category (acropora, 
-        bleached, etc...) as well as its bounding box's coordinates on 
-        the image. Ex. ["acropora", x, y, width, height]. x, y, as well
+        bleached, etc...) as well as its percentage probability and 
+        its bounding box's coordinates on  the image. 
+        Ex. ["acropora", probability, x, y, width, height]. x, y, as well
         as width and heigth are relative coordinates (i.e. between 0 and 1)
         Example of annotations for one image:
-        [["acropora", 0.25, 0.568, 0.02, 0.09],
-        ["dead", 0.46, 0.49, 0.05, 0.04], ...]
+        [["acropora", 96.04, 0.25, 0.568, 0.02, 0.09],
+        ["dead", 52,09, 0.46, 0.49, 0.05, 0.04], ...]
         """
         pass
 

@@ -151,7 +151,7 @@ class CoralsModels(CoralModelsInterface):
 
         shutil.move(f'{data_folder}/models/yolov3_data_last.pt', 'models')
         shutil.move(f'{data_folder}/json/data_yolov3_detection_config.json', 'json')
-        shutil.rmtree(f'{data_folder}')
+        shutil.rmtree(data_folder)
 
 
     def detect_corals(
@@ -165,31 +165,34 @@ class CoralsModels(CoralModelsInterface):
 
         Returns a list containing annotations for each 
         image. Each annotation contains a fragment's category (acropora, 
-        bleached, etc...) as well as its bounding box's coordinates on 
-        the image. Ex. ["acropora", x, y, width, height]. x, y, as well
+        bleached, etc...) as well as its percentage probability and 
+        its bounding box's coordinates on  the image. 
+        Ex. ["acropora", probability, x, y, width, height]. x, y, as well
         as width and heigth are relative coordinates (i.e. between 0 and 1)
         Example of annotations for one image:
-        [["acropora", 0.25, 0.568, 0.02, 0.09],
-        ["dead", 0.46, 0.49, 0.05, 0.04], ...]
+        [["acropora", 96.04, 0.25, 0.568, 0.02, 0.09],
+        ["dead", 52,09, 0.46, 0.49, 0.05, 0.04], ...]
         """
         ###########################################################################
         # Converting the images arrays into files
         ########################################################################### 
-        data_folder = f"predict_{time.time()}"
-        try: os.mkdir(data_folder)
+        input_folder = f"input_{time.time()}"
+        try: os.mkdir(input_folder)
         except FileExistsError: pass
 
         current_img_id = 0
+        img_ids = []
+        predictions = []
 
         for img_array in img:
             im = Image.fromarray(img_array)
-            im.save(f'{data_folder}/{current_img_id}.png')
+            im.save(f'{input_folder}/{current_img_id}.png')
+            img_ids.append(current_img_id)
             current_img_id += 1
 
         ###########################################################################
         # Detect coral fragments on the images
         ########################################################################### 
-        # REPRENDRE LÀ
 
         
         detector = CustomObjectDetection()
@@ -197,10 +200,27 @@ class CoralsModels(CoralModelsInterface):
         detector.setModelPath("models/yolov3_data_last.pt")
         detector.setJsonPath("json/data_yolov3_detection_config.json")
         detector.loadModel()
-        detections = detector.detectObjectsFromImage(input_image=input_image, output_image_path="prediction.jpg", minimum_percentage_probability=50)
-        for detection in detections:
-            print(detection["name"], " : ", detection["percentage_probability"], " : ", detection["box_points"])
 
+        for id in img_ids:
+            detections = []
+            with Image.open(f'{input_folder}/{id}.png') as input_img:
+                width, height = input_img.size
+            results = detector.detectObjectsFromImage(input_image=f'{input_folder}/{id}.png', minimum_percentage_probability=70)
+            for r in results:
+                detections.append(
+                    [
+                    r["name"],
+                    r["percentage_probability"],
+                    r["box_points"][0]/width,
+                    r["box_points"][1]/height,
+                    (r["box_points"][2]-r["box_points"][0])/width,
+                    (r["box_points"][3]-r["box_points"][1])/height
+                ]
+                )
+            predictions.append(detections)
+
+        shutil.rmtree(input_folder)
+        return predictions
 
     def fit_structure_detection(
             self,
