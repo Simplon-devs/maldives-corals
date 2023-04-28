@@ -124,6 +124,7 @@ class CoralsModels(CoralModelsInterface):
         trainer.setDataDirectory(data_directory=f'{data_folder}/yolo')
 
         ###########################################################################
+
         # Training the model (this can be VERY long)
         ###########################################################################   
         if start_from_pretrained:

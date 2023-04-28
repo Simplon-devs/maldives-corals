@@ -3,8 +3,6 @@
 
 **IMPORTANT: check out the readme in the subfolder maldives_corals if you are looking for the package documentation.**
 
-
-
 This work was published in *Aquatic Conservation: Marine and Freshwater Ecosystems* ([link](https://doi.org/10.1002/aqc.3878)) and can be cited the following way:
 
 > Morand, G., Dixon, S. & Le Berre, T. (2022). Identifying key factors for coral survival in reef restoration projects using deep learning. *Aquatic Conservation: Marine and Freshwater Ecosystems*, 32( 11), 1758– 1773. https://doi.org/10.1002/aqc.3878 
