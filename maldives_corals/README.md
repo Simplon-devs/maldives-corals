@@ -2,12 +2,14 @@
 
 This package contains the AI models needed to perform coral fragments and reef frame detection.
 
+
 ## Installation
 
 In order to install the maldives_corals package, run the following commands:
 ```
 git clone https://github.com/Simplon-devs/maldives-corals.git
 cd maldives_corals
+
 pip install .
 ```
 
@@ -47,6 +49,4 @@ You can also train the corals detection model yourself by providing it with a li
 models = CoralsModels()
 models.fit_corals_detection(images, annotations) 
 ```
-
-
 

@@ -16,6 +16,7 @@ from pylabel import importer
 from PIL import Image
 
 
+
 def coco_to_yolo(
         annotations_path: str, 
         img_path: str
@@ -54,6 +55,7 @@ def equalize_img(
         equalized_img = cv2.cvtColor(ycrcb_img, cv2.COLOR_YCrCb2BGR)
         cv2.imwrite(output_folder + '/' + img, equalized_img)
         processed_img += 1
+
         if processed_img % 100 == 0: 
             print(f"{processed_img} images processed")
 
@@ -87,6 +89,7 @@ def add_new_annots(
     that do not have any annotations and crops bounding boxes bigger than
     pictures.
     """
+
 
     data = json.load(open(sloth_json_path))
 
@@ -153,6 +156,7 @@ def add_new_annots(
 
     
 
+
 def create_coco(
         pictures_path: str, 
         annotations_path: str, 
@@ -170,7 +174,6 @@ def create_coco(
     Applies autocontrast & CLAHE to pictures and saves them in two subfolders (train
     and val).
     """
-
 
     trainDict = dict()
     trainDict["categories"] = [{"supercategory": "live_coral", "id": 0, "name": "acropora"},
