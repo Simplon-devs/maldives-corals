@@ -16,7 +16,7 @@ import pandas as pd
 import h5py
 from keras.optimizers import *
 from tensorflow import keras
-from tensorflow.keras.metrics import MeanIoU
+from keras.metrics import MeanIoU
 
 # Création de l'architecture de l'UNET
 def unet(input_size=(144, 192, 3)):
