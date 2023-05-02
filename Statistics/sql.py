@@ -5,7 +5,6 @@ import pandas as pd
 
 
 def OpenMydb(database="db_coral_planters"):
-
     # Opens the specified database
 
     db = MySQLdb.connect(host="localhost", user="root", passwd="root", db=database)
@@ -105,9 +104,11 @@ def get_mortality():
 
     data['D1'] = data['Date1'].apply(lambda x:datetime.strptime('20' + str(x).zfill(6), '%Y%m%d'))
     data['D2'] = data['Date2'].apply(lambda x:datetime.strptime('20' + str(x).zfill(6), '%Y%m%d'))
+    
     data['Median'] = data['D1'] + (data['D2'] - data['D1']) / 2
+
     data['tdelta'] = data['Median'].dt.date - data['Transplanted']
-    data = data[data['tdelta'].dt.days > 180]
+    data = data[[td.days > 180 for td in data['tdelta']]]
 
     survived = data[(data['Stat1'] == 'Live Coral') & (data['Stat2'] == 'Live Coral')]
     dead = data[(data['Stat1'] == 'Live Coral') & (data['Stat2'] != 'Live Coral')]
@@ -177,6 +178,9 @@ def get_bleached_data():
     desc = cur.description
     data.columns = [col[0] for col in desc]
     data['ObsDate'] = data['Date'].apply(lambda x:datetime.strptime('20' + str(x).zfill(6), '%Y%m%d')).dt.date
+    data['ObsDate'] = pd.to_datetime(data['ObsDate'])
+    data['Transplanted'] = pd.to_datetime(data['Transplanted'])
+    print(data[['ObsDate', 'Transplanted']].dtypes)
     data['BleachDelay'] = (data['ObsDate'] - data['Transplanted']).dt.days
 
     return(data)

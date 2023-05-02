@@ -47,32 +47,27 @@ else:
         zone_data = zone_data[zone_data['Zone'] == z]
         bleached_dict[z] = zone_data.groupby(['ObsDate'])['Outcome'].apply(lambda x: (x == 'Bleached Corail').sum() / len(x) * 100)
 
-
-        def get_growth_rate(axs, roll_window, zone):
         # Calcul du taux de croissance pour chaque zone
-            growth_data = get_growth_data()
-            zone_growth = growth_data[growth_data['Zone'] == zone]
-            live_coral_data = zone_growth[(zone_growth['Type'] == 'Acropora') | (zone_growth['Type'] == 'Pocillopora')]
-            live_coral_data = live_coral_data[['avgrowth']]
-            if len(live_coral_data) > 0:
-                growth_rate = live_coral_data.sort_index().rolling(int(roll_window)).mean() - 1
-                growth_rate['Zone'] = zone_growth['Zone']
-                growth_rate_mean = growth_rate.groupby('Zone')['avgrowth'].mean() # calcul des moyennes par zone
-                #print(growth_rate_mean)
-                #growth_dict[z] = growth_rate_mean
-                lines = []
-                for mz in growth_rate_mean.index:
-                    mz_data = growth_rate[growth_rate['Zone'] == mz]
-                    lines, = axs.plot_date(mz_data.index, mz_data['avgrowth'], '-', label=mz)
-                return lines
-            else:
-                print('No live coral data found for zone', zone)
-                return None
+        growth_data = get_growth_data()
+        zone_growth = growth_data[growth_data['Zone'] == z]
+        live_coral_data = zone_growth[(zone_growth['Type'] == 'Acropora') | (zone_growth['Type'] == 'Pocillopora')]
+        live_coral_data = live_coral_data[['avgrowth']]
+        if len(live_coral_data) > 0:
+            growth_rate = live_coral_data.sort_index().rolling(int(roll_window)).mean() - 1
+            growth_rate['Zone'] = zone_growth['Zone']
+            growth_rate_mean = growth_rate.groupby('Zone')['avgrowth'].mean() # calcul des moyennes par zone
+            growth_dict[z] = growth_rate_mean
+            for mz in growth_rate_mean.index:
+                mz_data = growth_rate[growth_rate['Zone'] == mz]
+                lines[mz], = axs[0].plot_date(mz_data.index, mz_data['avgrowth'], '-', label=mz)
+        else:
+            print('No live coral data found for zone', z)
 
         # Création imputer pour remplacer les valeurs manquantes par la moyenne
         imputer = SimpleImputer(strategy='mean')
 
         # Entrainement du modèle de régression linéaire pour le taux de mortalité
+
         #print(growth_dict.keys())
         #print(growth_dict[z].index)
         #print(growth_dict)
