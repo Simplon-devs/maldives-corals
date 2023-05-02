@@ -45,7 +45,8 @@ class CoralModelsInterface(ABC):
     @abstractclassmethod
     def detect_corals(
         self,
-        img: Iterable
+        img: Iterable,
+        return_images=False
         ) -> list:
         """
         Detects corals on the images stored in parameter img.

@@ -15,3 +15,6 @@ scipy==1.8.0
 scikit-image
 stochopy==2.2.0
 tensorflow==2.12.0
+torch
+torchvision
+torchaudio

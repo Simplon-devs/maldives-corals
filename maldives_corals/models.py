@@ -11,6 +11,7 @@ More models will be added later.
 import os
 import shutil
 import time
+import numpy as np
 from imageai.Detection.Custom import DetectionModelTrainer
 from imageai.Detection.Custom import CustomObjectDetection
 from typing import Iterable
@@ -156,12 +157,15 @@ class CoralsModels(CoralModelsInterface):
 
     def detect_corals(
             self,
-            img: Iterable
+            img: Iterable,
+            return_images=False
             ) -> list:
         """
         Detects corals on the images stored in parameter img.
         Args:
             img: iterable of images as matrices (e.g. images opened with PIL).
+            return_images: if True, the function will return images wiht bounding 
+            boxes instead of annotations.
 
         Returns a list containing annotations for each 
         image. Each annotation contains a fragment's category (acropora, 
@@ -177,7 +181,10 @@ class CoralsModels(CoralModelsInterface):
         # Converting the images arrays into files
         ########################################################################### 
         input_folder = f"input_{time.time()}"
+        output_folder = f"output_{time.time()}"
         try: os.mkdir(input_folder)
+        except FileExistsError: pass
+        try: os.mkdir(output_folder)
         except FileExistsError: pass
 
         current_img_id = 0
@@ -201,11 +208,27 @@ class CoralsModels(CoralModelsInterface):
         detector.setJsonPath("json/data_yolov3_detection_config.json")
         detector.loadModel()
 
-        for id in img_ids:
-            detections = []
-            with Image.open(f'{input_folder}/{id}.png') as input_img:
-                width, height = input_img.size
-            results = detector.detectObjectsFromImage(input_image=f'{input_folder}/{id}.png', minimum_percentage_probability=70)
+
+        if return_images:
+            
+            for file in os.listdir(input_folder):
+                results = detector.detectObjectsFromImage(input_image=input_folder + '/' + file, 
+                                                    minimum_percentage_probability=70,
+                                                    output_image_path=output_folder + '/' + file)
+            
+            for file in os.listdir(output_folder):
+                predictions.append(np.asarray(Image.open(output_folder + '/' + file)))
+            
+
+        else:
+
+            for id in img_ids:
+                detections = []
+                with Image.open(f'{input_folder}/{id}.png') as input_img:
+                    width, height = input_img.size
+
+            results = detector.detectObjectsFromImage(input_image=f'{input_folder}/{id}.png', 
+                                                        minimum_percentage_probability=70)
             for r in results:
                 detections.append(
                     [
@@ -220,6 +243,7 @@ class CoralsModels(CoralModelsInterface):
             predictions.append(detections)
 
         shutil.rmtree(input_folder)
+        shutil.rmtree(output_folder)
         return predictions
 
     def fit_structure_detection(
