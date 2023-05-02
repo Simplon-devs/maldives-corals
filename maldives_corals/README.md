@@ -45,6 +45,27 @@ Output:
 ```
 [['acropora', 96.04, 0.5618055555555556, 0.6268518518518519, 0.07013888888888889, 0.06666666666666667], ['acropora', 98.71, 0.4326388888888889, 0.6157407407407407, 0.08611111111111111, 0.046296296296296294], ...]
 ```
+
+By default, the function detect_corals returns a list of annotations. If you want, you can call the function with the parameter ```return_images=True``` in order to get a list of image arrays instead:
+
+```python
+pred = models.detect_corals([img], return_images=True)
+
+print(pred[0])
+```
+
+Output:
+```
+[[[  5  57  70]
+  [  2  56  68]
+  [  0  56  64]
+  ...
+  [  0 159 169]
+  [  0 163 173]
+  [  0 167 176]]]
+```
+
+
 You can also train the corals detection model yourself by providing it with a list of image RGB arrays and the corresponding annotations. The annotations must follow the YOLO format. See [the imageAI documentation](https://imageai.readthedocs.io/en/latest/customdetection/index.html) for more information.
 
 ```python
