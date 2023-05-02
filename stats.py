@@ -2,13 +2,12 @@ import matplotlib.pyplot as plt
 from Statistics.sql import get_growth_data
 import pandas as pd
 
-def get_growth_rate(growth_data, axs, roll_window, zone):
+def get_growth_rate(growth_data, roll_window, zone):
     """
     Calculate average growth rate of lived corals for a given area
     Arguments:
-    - growth_data: external function from sql.py, by Gaetan, which return a dataframe with growth data necessary to this function, with this following columns: 'FragmentID', 'Type', 'Tag', 'Zone', 'Date1', 'Stat1', 'len1', 'Date2', 'Stat2', 'len2', 'Ndate1', 'Ndate2', 'Median', 'tdelta', 'avgrowth'
+    - growth_data: dataframe with growth data necessary to this function, with this following columns: 'Type', 'Zone', 'avgrowth'
     informations only on lived corals and stock informations in livedf dataframe, takes informations of differents dates and make an average of growthering 
-    - axs: matplotlib.axes, draw growth chart
     - roll_window: a time window for calculating the moving average
     - zone: zone for which we want to calculate the growth rate
     Needs get_growth_data function for having data of growth's corals
@@ -21,11 +20,7 @@ def get_growth_rate(growth_data, axs, roll_window, zone):
         growth_rate = live_coral_data.sort_index().rolling(int(roll_window)).mean() - 1
         growth_rate['Zone'] = zone_growth['Zone']
         growth_rate_mean = growth_rate.groupby('Zone')['avgrowth'].mean() # calcul des moyennes par zone
-        lines = []
-        for mz in growth_rate_mean.index:
-            mz_data = growth_rate[growth_rate['Zone'] == mz]
-            lines, = axs.plot_date(mz_data.index, mz_data['avgrowth'], '-', label=mz)
-        return lines
+        return growth_rate_mean.iloc[0]
     else:
         print('No live coral data found for zone', zone)
         return None
@@ -100,13 +95,5 @@ def get_growth_coral(growth_data, roll_window):
     return figs
     
 
-# test
-growth_data = pd.DataFrame({'FragmentID': ['frag1', 'frag2', 'frag3', 'frag4', 'frag5', 'frag6'],
-                            'Type': ['Acropora', 'Acropora', 'Acropora', 'Acropora', 'Acropora', 'Acropora'],
-                            'avgrowth': [0.02, 0.03, 0.01, 0.02, 0.01, 0.02],
-                            'tdelta': pd.date_range(start='2022-01-01', periods=6, freq='M')
-                            })
-fig = get_growth_coral(growth_data, 120)
-plt.show()
 
 

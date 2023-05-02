@@ -4,8 +4,7 @@ from datetime import datetime, date, timedelta
 import pandas as pd
 
 
-def OpenMydb(database="Reefscapers2020_v2"):
-
+def OpenMydb(database="db_coral_planters"):
     # Opens the specified database
 
     db = MySQLdb.connect(host="localhost", user="root", passwd="root", db=database)

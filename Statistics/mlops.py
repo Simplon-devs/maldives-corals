@@ -13,7 +13,7 @@ from sql import get_mortality, get_bleached_data, get_growth_data
 
 mainzones = ['Water Villas (LG)', 'Channel (KH)', 'Blue Holes (LG)', 'Parrot Reef (LG)', 'Water Villas (KH)', 'House Reef (KH)', 'Blu (LG)', 'Blu Deep (LG)', 'Dive Site (LG)', 'Coral Trail (LG)', 'Anchor Point (LG)', 'Al Barakat (LG)']
 
-play = False
+play = True
 
 if play == True:
     # Téléchargement et prétraitement des modèles de mortalité
@@ -32,14 +32,17 @@ else:
     fig, axs = plt.subplots(2, sharex = True, figsize = [13,8])
 
     # Calcul du taux de mortalité pour chaque zone
+    cpt = 0
     for z in survived['Zone'].unique():
         zone_survived_counts = survived['Median'].value_counts()
         zone_dead_counts = dead['Median'].value_counts()
         mortality_dict[z] = zone_dead_counts / (zone_dead_counts + zone_survived_counts)
         mortality_dict[z] = mortality_dict[z].sort_index().rolling(str(roll_window) + 'd').sum() / roll_window * 100
         lines[z], = axs[0].plot_date(mortality_dict[z].index, mortality_dict[z], '-')
+        print(f"Taux calculés : {cpt}")
+        cpt+=1
 
-        # Calcul du taux de blanchissement pour chaque zone
+    """ # Calcul du taux de blanchissement pour chaque zone
         zone_data = get_bleached_data()
         zone_data = zone_data[zone_data['Zone'] == z]
         bleached_dict[z] = zone_data.groupby(['ObsDate'])['Outcome'].apply(lambda x: (x == 'Bleached Corail').sum() / len(x) * 100)
@@ -175,4 +178,4 @@ else:
             mlflow.log_artifact(f"growth_{z}.png")
             plt.close(fig)
 
-        mlflow.end_run()
+        mlflow.end_run()"""
