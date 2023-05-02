@@ -21,6 +21,9 @@ setup(name='maldives_corals',
             'numpy',
             'opencv_python',
             'Pillow',
-            'pylabel'
+            'pylabel',
+            'torch',
+            'torchvision',
+            'torchaudio'
         ]
 )

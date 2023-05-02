@@ -13,7 +13,9 @@ cd maldives_corals
 pip install .
 ```
 
-For the model to work, you will also need to download the pretrained model and its parameters. To that end, download [this folder](https://drive.google.com/drive/folders/1MluLeh9jHxo0CYyZgnXtsvgun5ISGrcT?usp=share_link) and paste its contents in the directory where you run your code.
+Do not forget to create your own virtual environment if needed to use the package where you want to use it in your computer.
+
+For the model to work, you will also need to download the pretrained model and its parameters. To that end, download [this folder](https://drive.google.com/drive/folders/1MluLeh9jHxo0CYyZgnXtsvgun5ISGrcT?usp=share_link) and paste its contents in the directory where you run your code. You also need an image you can paste in this same directory to launch the test script given below.
 
 ## Using the package
 
@@ -27,7 +29,7 @@ Both of these models are currently under development.
 ```python
 import numpy as np
 from PIL import Image
-from maldives_corals import CoralsModels
+from maldives_corals.models import CoralsModels
 
 models = CoralsModels()
 img = np.asarray(Image.open('image_test.jpg'))
