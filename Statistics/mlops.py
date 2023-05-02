@@ -31,7 +31,6 @@ else:
     lines = {}
     fig, axs = plt.subplots(2, sharex = True, figsize = [13,8])
 
-
     # Calcul du taux de mortalité pour chaque zone
     for z in survived['Zone'].unique():
         zone_survived_counts = survived['Median'].value_counts()
@@ -65,10 +64,10 @@ else:
         imputer = SimpleImputer(strategy='mean')
 
         # Entrainement du modèle de régression linéaire pour le taux de mortalité
-        print(mortality_dict[z].values)
-        print(bleached_dict[z].values)
-        print(growth_dict.keys())
-        print(growth_dict[z].values)
+
+        #print(growth_dict.keys())
+        #print(growth_dict[z].index)
+        #print(growth_dict)
 
         X = pd.to_numeric(mortality_dict[z].index).values.reshape(-1,1)
         y = mortality_dict[z].values.reshape(-1,1)
