@@ -208,35 +208,39 @@ class CoralsModels(CoralModelsInterface):
         detector.setJsonPath("json/data_yolov3_detection_config.json")
         detector.loadModel()
 
-        for id in img_ids:
-            detections = []
-            with Image.open(f'{input_folder}/{id}.png') as input_img:
-                width, height = input_img.size
+
+        if return_images:
             
-            if return_images:
-                results = detector.detectObjectsFromImage(input_image=f'{input_folder}/{id}.png', 
-                                                          minimum_percentage_probability=70,
-                                                          output_image_path=output_folder)
-                
-                for file in os.listdir(output_folder):
-                    predictions.append(np.asarray(Image.open(file)))
-                
+            for file in os.listdir(input_folder):
+                results = detector.detectObjectsFromImage(input_image=input_folder + '/' + file, 
+                                                    minimum_percentage_probability=70,
+                                                    output_image_path=output_folder + '/' + file)
+            
+            for file in os.listdir(output_folder):
+                predictions.append(np.asarray(Image.open(output_folder + '/' + file)))
             
 
-            else:
-                results = detector.detectObjectsFromImage(input_image=f'{input_folder}/{id}.png', minimum_percentage_probability=70)
-                for r in results:
-                    detections.append(
-                        [
-                        r["name"],
-                        r["percentage_probability"],
-                        r["box_points"][0]/width,
-                        r["box_points"][1]/height,
-                        (r["box_points"][2]-r["box_points"][0])/width,
-                        (r["box_points"][3]-r["box_points"][1])/height
-                    ]
-                    )
-                predictions.append(detections)
+        else:
+
+            for id in img_ids:
+                detections = []
+                with Image.open(f'{input_folder}/{id}.png') as input_img:
+                    width, height = input_img.size
+
+            results = detector.detectObjectsFromImage(input_image=f'{input_folder}/{id}.png', 
+                                                        minimum_percentage_probability=70)
+            for r in results:
+                detections.append(
+                    [
+                    r["name"],
+                    r["percentage_probability"],
+                    r["box_points"][0]/width,
+                    r["box_points"][1]/height,
+                    (r["box_points"][2]-r["box_points"][0])/width,
+                    (r["box_points"][3]-r["box_points"][1])/height
+                ]
+                )
+            predictions.append(detections)
 
         shutil.rmtree(input_folder)
         shutil.rmtree(output_folder)
