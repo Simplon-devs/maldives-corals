@@ -27,7 +27,7 @@ Both of these models are currently under development.
 ```python
 import numpy as np
 from PIL import Image
-from maldives_corals import CoralsModels
+from maldives_corals.models import CoralsModels
 
 models = CoralsModels()
 img = np.asarray(Image.open('image_test.jpg'))
