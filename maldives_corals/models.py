@@ -102,9 +102,9 @@ class CoralsModels(CoralModelsInterface):
                     clean_annotation += str(class_index)
                     clean_annotation += " "
                     clean_annotation += " ".join([str(split_annotation[1]), 
-                                                  str(split_annotation[1]), 
-                                                  str(split_annotation[1]), 
-                                                  str(split_annotation[1])])
+                                                  str(split_annotation[2]), 
+                                                  str(split_annotation[3]), 
+                                                  str(split_annotation[4])])
                     annotations_lines.append(clean_annotation)
                 for line in annotations_lines: annot_file.write(line + '\n')
                 
@@ -117,10 +117,14 @@ class CoralsModels(CoralModelsInterface):
                 annotations_lines = []
                 for a in annots:
                     clean_annotation = ""
-                    class_index = classes.index(a[0])
+                    split_annotation = a.split(" ")
+                    class_index = classes.index(split_annotation[0])
                     clean_annotation += str(class_index)
                     clean_annotation += " "
-                    clean_annotation += " ".join([str(a[1]), str(a[2]), str(a[3]), str(a[4])])
+                    clean_annotation += " ".join([str(split_annotation[1]), 
+                                                  str(split_annotation[2]), 
+                                                  str(split_annotation[3]), 
+                                                  str(split_annotation[4])])
                     annotations_lines.append(clean_annotation)
                 for line in annotations_lines: annot_file.write(line + '\n')
             
@@ -137,7 +141,7 @@ class CoralsModels(CoralModelsInterface):
             trainer.setTrainConfig(object_names_array=classes, 
                             batch_size=10, 
                             num_experiments=epochs_count, 
-                            train_from_pretrained_model="models/yolov3_data_last.pt")
+                            train_from_pretrained_model="models/yolov3_yolo_last.pt")
 
         else:
             trainer.setTrainConfig(object_names_array=classes, 
@@ -155,7 +159,12 @@ class CoralsModels(CoralModelsInterface):
         try: os.mkdir('json')
         except FileExistsError: pass
 
-        shutil.move(f'{data_folder}/models/yolov3_data_last.pt', 'models')
+        if os.path.isfile("models/yolov3_yolo_last.pt"):
+            os.remove("models/yolov3_yolo_last.pt")
+        if os.path.isfile("json/data_yolov3_detection_config.json"):
+            os.remove("json/data_yolov3_detection_config.json")
+
+        shutil.move(f'{data_folder}/models/yolov3_yolo_last.pt', 'models')
         shutil.move(f'{data_folder}/json/data_yolov3_detection_config.json', 'json')
         shutil.rmtree(data_folder)
 
@@ -209,7 +218,7 @@ class CoralsModels(CoralModelsInterface):
         
         detector = CustomObjectDetection()
         detector.setModelTypeAsYOLOv3()
-        detector.setModelPath("models/yolov3_data_last.pt")
+        detector.setModelPath("models/yolov3_yolo_last.pt")
         detector.setJsonPath("json/data_yolov3_detection_config.json")
         detector.loadModel()
 
