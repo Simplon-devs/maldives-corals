@@ -53,6 +53,7 @@ class CoralsModels(CoralModelsInterface):
         trainer = DetectionModelTrainer()
         trainer.setModelTypeAsYOLOv3()
         train_val_split = 0.8
+        epochs_count = 100
         classes = ["acropora", "pocillopora", "dead", "bleached", "tag"]
 
         ###########################################################################
@@ -96,10 +97,14 @@ class CoralsModels(CoralModelsInterface):
                 annotations_lines = []
                 for a in annots:
                     clean_annotation = ""
-                    class_index = classes.index(a[0])
+                    split_annotation = a.split(" ")
+                    class_index = classes.index(split_annotation[0])
                     clean_annotation += str(class_index)
                     clean_annotation += " "
-                    clean_annotation += " ".join([str(a[1]), str(a[2]), str(a[3]), str(a[4])])
+                    clean_annotation += " ".join([str(split_annotation[1]), 
+                                                  str(split_annotation[1]), 
+                                                  str(split_annotation[1]), 
+                                                  str(split_annotation[1])])
                     annotations_lines.append(clean_annotation)
                 for line in annotations_lines: annot_file.write(line + '\n')
                 
@@ -131,13 +136,13 @@ class CoralsModels(CoralModelsInterface):
         if start_from_pretrained:
             trainer.setTrainConfig(object_names_array=classes, 
                             batch_size=10, 
-                            num_experiments=200, 
+                            num_experiments=epochs_count, 
                             train_from_pretrained_model="models/yolov3_data_last.pt")
 
         else:
             trainer.setTrainConfig(object_names_array=classes, 
                             batch_size=10, 
-                            num_experiments=200, 
+                            num_experiments=epochs_count, 
                             train_from_pretrained_model="models/yolov3.pt")
         trainer.trainModel()
 
