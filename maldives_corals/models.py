@@ -164,8 +164,8 @@ class CoralsModels(CoralModelsInterface):
         if os.path.isfile("json/data_yolov3_detection_config.json"):
             os.remove("json/data_yolov3_detection_config.json")
 
-        shutil.move(f'{data_folder}/models/yolov3_yolo_last.pt', 'models')
-        shutil.move(f'{data_folder}/json/data_yolov3_detection_config.json', 'json')
+        shutil.move(f'{data_folder}/yolo/models/yolov3_yolo_last.pt', 'models')
+        shutil.move(f'{data_folder}/yolo/json/data_yolov3_detection_config.json', 'json')
         shutil.rmtree(data_folder)
 
 
