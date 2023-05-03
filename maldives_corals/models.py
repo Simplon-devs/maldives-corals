@@ -161,11 +161,11 @@ class CoralsModels(CoralModelsInterface):
 
         if os.path.isfile("models/yolov3_yolo_last.pt"):
             os.remove("models/yolov3_yolo_last.pt")
-        if os.path.isfile("json/data_yolov3_detection_config.json"):
-            os.remove("json/data_yolov3_detection_config.json")
+        if os.path.isfile("json/yolo_yolov3_detection_config.json"):
+            os.remove("json/yolo_yolov3_detection_config.json")
 
         shutil.move(f'{data_folder}/yolo/models/yolov3_yolo_last.pt', 'models')
-        shutil.move(f'{data_folder}/yolo/json/data_yolov3_detection_config.json', 'json')
+        shutil.move(f'{data_folder}/yolo/json/yolo_yolov3_detection_config.json', 'json')
         shutil.rmtree(data_folder)
 
 
@@ -219,7 +219,7 @@ class CoralsModels(CoralModelsInterface):
         detector = CustomObjectDetection()
         detector.setModelTypeAsYOLOv3()
         detector.setModelPath("models/yolov3_yolo_last.pt")
-        detector.setJsonPath("json/data_yolov3_detection_config.json")
+        detector.setJsonPath("json/yolo_yolov3_detection_config.json")
         detector.loadModel()
 
 
