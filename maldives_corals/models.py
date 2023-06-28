@@ -68,6 +68,7 @@ class CoralsModels(CoralModelsInterface):
         trainer = DetectionModelTrainer()
         trainer.setModelTypeAsYOLOv3()
         train_val_split = 0.8
+        epochs_count = 100
         classes = ["acropora", "pocillopora", "dead", "bleached", "tag"]
 
         ###########################################################################
@@ -111,10 +112,14 @@ class CoralsModels(CoralModelsInterface):
                 annotations_lines = []
                 for a in annots:
                     clean_annotation = ""
-                    class_index = classes.index(a[0])
+                    split_annotation = a.split(" ")
+                    class_index = classes.index(split_annotation[0])
                     clean_annotation += str(class_index)
                     clean_annotation += " "
-                    clean_annotation += " ".join([str(a[1]), str(a[2]), str(a[3]), str(a[4])])
+                    clean_annotation += " ".join([str(split_annotation[1]), 
+                                                  str(split_annotation[2]), 
+                                                  str(split_annotation[3]), 
+                                                  str(split_annotation[4])])
                     annotations_lines.append(clean_annotation)
                 for line in annotations_lines: annot_file.write(line + '\n')
                 
@@ -127,10 +132,14 @@ class CoralsModels(CoralModelsInterface):
                 annotations_lines = []
                 for a in annots:
                     clean_annotation = ""
-                    class_index = classes.index(a[0])
+                    split_annotation = a.split(" ")
+                    class_index = classes.index(split_annotation[0])
                     clean_annotation += str(class_index)
                     clean_annotation += " "
-                    clean_annotation += " ".join([str(a[1]), str(a[2]), str(a[3]), str(a[4])])
+                    clean_annotation += " ".join([str(split_annotation[1]), 
+                                                  str(split_annotation[2]), 
+                                                  str(split_annotation[3]), 
+                                                  str(split_annotation[4])])
                     annotations_lines.append(clean_annotation)
                 for line in annotations_lines: annot_file.write(line + '\n')
             
@@ -146,13 +155,13 @@ class CoralsModels(CoralModelsInterface):
         if start_from_pretrained:
             trainer.setTrainConfig(object_names_array=classes, 
                             batch_size=10, 
-                            num_experiments=200, 
-                            train_from_pretrained_model="models/yolov3_data_last.pt")
+                            num_experiments=epochs_count, 
+                            train_from_pretrained_model="models/yolov3_yolo_last.pt")
 
         else:
             trainer.setTrainConfig(object_names_array=classes, 
                             batch_size=10, 
-                            num_experiments=200, 
+                            num_experiments=epochs_count, 
                             train_from_pretrained_model="models/yolov3.pt")
         trainer.trainModel()
 
@@ -165,8 +174,13 @@ class CoralsModels(CoralModelsInterface):
         try: os.mkdir('json')
         except FileExistsError: pass
 
-        shutil.move(f'{data_folder}/models/yolov3_data_last.pt', 'models')
-        shutil.move(f'{data_folder}/json/data_yolov3_detection_config.json', 'json')
+        if os.path.isfile("models/yolov3_yolo_last.pt"):
+            os.remove("models/yolov3_yolo_last.pt")
+        if os.path.isfile("json/yolo_yolov3_detection_config.json"):
+            os.remove("json/yolo_yolov3_detection_config.json")
+
+        shutil.move(f'{data_folder}/yolo/models/yolov3_yolo_last.pt', 'models')
+        shutil.move(f'{data_folder}/yolo/json/yolo_yolov3_detection_config.json', 'json')
         shutil.rmtree(data_folder)
 
 
@@ -219,8 +233,8 @@ class CoralsModels(CoralModelsInterface):
         
         detector = CustomObjectDetection()
         detector.setModelTypeAsYOLOv3()
-        detector.setModelPath("models/yolov3_data_last.pt")
-        detector.setJsonPath("json/data_yolov3_detection_config.json")
+        detector.setModelPath("models/yolov3_yolo_last.pt")
+        detector.setJsonPath("json/yolo_yolov3_detection_config.json")
         detector.loadModel()
 
 
